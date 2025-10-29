@@ -10,13 +10,13 @@
 @keyframes chat-edge-throb {
   0%, 100% {
     box-shadow:
-      0 0 0 0 rgba(246, 130, 31, 0.10),
-      inset 0 0 0 1px rgba(246, 130, 31, 0.16);
+      0 0 0 0 rgba(0, 245, 212, 0.10),
+      inset 0 0 0 1px rgba(0, 245, 212, 0.16);
   }
   50% {
     box-shadow:
-      0 0 0 6px rgba(255, 61, 0, 0.08),
-      inset 0 0 0 2px rgba(255, 61, 0, 0.22);
+      0 0 0 6px rgba(0, 245, 212, 0.08),
+      inset 0 0 0 2px rgba(0, 245, 212, 0.22);
   }
 }
 
@@ -90,7 +90,7 @@
 		oklch(0.922 0 0);
 	--ring:
 		oklch(0.708 0 0);
-	--build-accent-color: #ff3d00;
+	--build-accent-color: #00f5d4;
 	--build-chat-colors-bg-1: #e7e7e7;
 	--build-chat-colors-bg-2: #f6f6f6;
 	--build-chat-colors-bg-3: #fbfbfc;
@@ -99,9 +99,9 @@
 	--build-chat-colors-border-secondary: #eeeeee;
 	--build-chat-colors-border-tertiary: #eeeeee;
 	--build-chat-colors-danger: #950000cc;
-	--build-chat-colors-brand-heavy: #f6821f;
-	--build-chat-colors-brand-primary: #f6821f;
-	--build-chat-colors-brand-subtle: #f6821f;
+	--build-chat-colors-brand-heavy: #00f5d4;
+	--build-chat-colors-brand-primary: #00f5d4;
+	--build-chat-colors-brand-subtle: #00f5d4;
 	--build-chat-colors-text-inverted: #ffffff;
 	--build-chat-colors-text-primary: #0a0a0a;
 	--build-chat-colors-text-secondary: #171717;
@@ -123,9 +123,9 @@
 	--build-chat-colors-border-primary: #393939;
 	--build-chat-colors-border-secondary: #454746;
 	--build-chat-colors-border-tertiary: #454746;
-	--build-chat-colors-brand-heavy: #f6821f;
-	--build-chat-colors-brand-primary: #f6821f;
-	--build-chat-colors-brand-subtle: #f6821f;
+	--build-chat-colors-brand-heavy: #00f5d4;
+	--build-chat-colors-brand-primary: #00f5d4;
+	--build-chat-colors-brand-subtle: #00f5d4;
 	--build-chat-colors-text-inverted: #000000;
 	--build-chat-colors-text-primary: #ffffff;
 	--build-chat-colors-text-secondary: #cdcaca;
