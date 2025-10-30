@@ -8,6 +8,7 @@ import {
 } from '../components/agent-mode-toggle';
 import { useAuthGuard } from '../hooks/useAuthGuard';
 import { usePaginatedApps } from '@/hooks/use-paginated-apps';
+import { useSubscription } from '@/hooks/use-subscription';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { AppCard } from '@/components/shared/AppCard';
 import clsx from 'clsx';
@@ -16,6 +17,7 @@ import { useDragDrop } from '@/hooks/use-drag-drop';
 import { ImageUploadButton } from '@/components/image-upload-button';
 import { ImageAttachmentPreview } from '@/components/image-attachment-preview';
 import { SUPPORTED_IMAGE_MIME_TYPES } from '@/api-types';
+import { toast } from 'sonner';
 
 export default function Home() {
 	const navigate = useNavigate();
@@ -57,6 +59,8 @@ export default function Home() {
 		limit: 6,
 	});
 
+	const { hasActiveSubscription, loading: subscriptionLoading } = useSubscription();
+
 	// Discover section should appear only when enough apps are available and loading is done
 	const discoverReady = useMemo(() => !loading && (apps?.length ?? 0) > 5, [loading, apps]);
 
@@ -68,6 +72,7 @@ export default function Home() {
 		const imageParam = images.length > 0 ? `&images=${encodeURIComponent(JSON.stringify(images))}` : '';
 		const intendedUrl = `/chat/new?query=${encodedQuery}&agentMode=${encodedMode}${imageParam}`;
 
+		// Check authentication first
 		if (
 			!requireAuth({
 				requireFullAuth: true,
@@ -78,7 +83,18 @@ export default function Home() {
 			return;
 		}
 
-		// User is already authenticated, navigate immediately
+		// Check subscription status
+		if (!subscriptionLoading && !hasActiveSubscription) {
+			toast.error('Please subscribe to create applications', {
+				action: {
+					label: 'View Plans',
+					onClick: () => navigate('/pricing'),
+				},
+			});
+			return;
+		}
+
+		// User is already authenticated and has subscription, navigate immediately
 		navigate(intendedUrl);
 		// Clear images after navigation
 		clearImages();
