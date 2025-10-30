@@ -39,9 +39,9 @@ export default function Home() {
 
 
 	const placeholderPhrases = useMemo(() => [
-		"todo list app",
-		"F1 fantasy game",
-		"personal finance tracker"
+		"staffing app for nursing",
+		"CRM for dentist office",
+		"patient portal for clinic"
 	], []);
 	const [currentPlaceholderPhraseIndex, setCurrentPlaceholderPhraseIndex] = useState(0);
 	const [currentPlaceholderText, setCurrentPlaceholderText] = useState("");
