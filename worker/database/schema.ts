@@ -615,3 +615,106 @@ export type NewUserModelProvider = typeof userModelProviders.$inferInsert;
 
 export type Star = typeof stars.$inferSelect;
 export type NewStar = typeof stars.$inferInsert;
+
+// ========================================
+// STRIPE SUBSCRIPTIONS AND PAYMENTS
+// ========================================
+
+/**
+ * Subscriptions table - Stripe subscription data for users
+ */
+export const subscriptions = sqliteTable('subscriptions', {
+    id: text('id').primaryKey(), // Stripe subscription ID
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    
+    // Stripe data
+    stripeCustomerId: text('stripe_customer_id').notNull(),
+    stripePriceId: text('stripe_price_id').notNull(),
+    stripeProductId: text('stripe_product_id').notNull(),
+    
+    // Subscription status
+    status: text('status').notNull(), // active, canceled, incomplete, past_due, trialing, unpaid
+    cancelAtPeriodEnd: integer('cancel_at_period_end', { mode: 'boolean' }).default(false),
+    
+    // Billing
+    currentPeriodStart: integer('current_period_start', { mode: 'timestamp' }).notNull(),
+    currentPeriodEnd: integer('current_period_end', { mode: 'timestamp' }).notNull(),
+    canceledAt: integer('canceled_at', { mode: 'timestamp' }),
+    trialStart: integer('trial_start', { mode: 'timestamp' }),
+    trialEnd: integer('trial_end', { mode: 'timestamp' }),
+    
+    // Metadata
+    createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`),
+}, (table) => ({
+    userIdIdx: index('subscriptions_user_id_idx').on(table.userId),
+    stripeCustomerIdIdx: index('subscriptions_stripe_customer_id_idx').on(table.stripeCustomerId),
+    statusIdx: index('subscriptions_status_idx').on(table.status),
+}));
+
+/**
+ * Payment History table - Track all Stripe payments
+ */
+export const payments = sqliteTable('payments', {
+    id: text('id').primaryKey(), // Stripe payment intent ID
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    subscriptionId: text('subscription_id').references(() => subscriptions.id, { onDelete: 'set null' }),
+    
+    // Stripe data
+    stripeInvoiceId: text('stripe_invoice_id'),
+    stripeCustomerId: text('stripe_customer_id').notNull(),
+    
+    // Payment details
+    amount: integer('amount').notNull(), // Amount in cents
+    currency: text('currency').notNull().default('usd'),
+    status: text('status').notNull(), // succeeded, pending, failed, refunded
+    
+    // Metadata
+    description: text('description'),
+    receiptUrl: text('receipt_url'),
+    
+    // Timestamps
+    createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`),
+    paidAt: integer('paid_at', { mode: 'timestamp' }),
+}, (table) => ({
+    userIdIdx: index('payments_user_id_idx').on(table.userId),
+    subscriptionIdIdx: index('payments_subscription_id_idx').on(table.subscriptionId),
+    statusIdx: index('payments_status_idx').on(table.status),
+}));
+
+/**
+ * Usage tracking table - Track user usage for billing
+ */
+export const usageRecords = sqliteTable('usage_records', {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    
+    // Usage metrics
+    tokensIn: integer('tokens_in').default(0),
+    tokensOut: integer('tokens_out').default(0),
+    totalRequests: integer('total_requests').default(0),
+    totalCost: real('total_cost').default(0),
+    
+    // Time period
+    periodStart: integer('period_start', { mode: 'timestamp' }).notNull(),
+    periodEnd: integer('period_end', { mode: 'timestamp' }).notNull(),
+    
+    // Billing
+    reported: integer('reported', { mode: 'boolean' }).default(false),
+    stripeUsageRecordId: text('stripe_usage_record_id'),
+    
+    // Metadata
+    createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`),
+}, (table) => ({
+    userIdIdx: index('usage_records_user_id_idx').on(table.userId),
+    periodIdx: index('usage_records_period_idx').on(table.periodStart, table.periodEnd),
+}));
+
+export type Subscription = typeof subscriptions.$inferSelect;
+export type NewSubscription = typeof subscriptions.$inferInsert;
+
+export type Payment = typeof payments.$inferSelect;
+export type NewPayment = typeof payments.$inferInsert;
+
+export type UsageRecord = typeof usageRecords.$inferSelect;
+export type NewUsageRecord = typeof usageRecords.$inferInsert;
