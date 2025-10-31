@@ -429,7 +429,7 @@ export const AppCard = React.memo<AppCardProps>(
 						)}
 					>
 					{/* Enhanced Preview Section with High-Quality Rendering */}
-					<div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950/20 dark:to-orange-900/20">
+					<div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-gradient-to-br from-accent/10 to-purple-100 dark:from-accent/20 dark:to-purple-900/20">
 						{app.screenshotUrl ? (
 							<img
 								src={app.screenshotUrl}
@@ -438,7 +438,7 @@ export const AppCard = React.memo<AppCardProps>(
 									'w-full h-full transition-all duration-300 ease-out',
 									// High-quality rendering with smart cropping for better visual appeal
 									'object-cover object-center',
-									'bg-gradient-to-br from-red-50/60 to-red-100/60 dark:from-red-950/15 dark:to-red-900/15',
+									'bg-gradient-to-br from-accent/10 to-purple-100/60 dark:from-accent/15 dark:to-purple-900/15',
 								)}
 								loading="lazy"
 								fetchPriority="low"
